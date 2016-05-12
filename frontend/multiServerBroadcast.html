@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Map Implementation</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+	
+</head>
+
+<body>
+
+<label for=""> Client ID : </label>
+<input type="text" id="client_id" />
+<input type="text" id="client_text" />
+<button id="go">GO !</button>
+
+<button id="throw"> Throw </button>
+
+	<script>
+		$(function(){
+
+    $(document).on( 'click' , '#go' , function(e){
+      e.preventDefault();
+      window.id = $('#client_id').val();
+      alert(id);
+
+      //define socket
+      window.socket = io.connect('http://192.168.0.6:3000');
+
+      //set the delivery boy with this ID 
+      socket.on('connect' , function(){
+
+        socket.emit('storeClientInfo', { customId : "delivey_boy_"+id });
+
+      });
+
+
+
+    });
+
+    $(document).on( 'click' , '#throw' , function(e){
+      var customid = 'delivey_boy_'+id;
+        socket.emit( 'moving' , { test : $('#client_text').val() , customId : customid} );
+
+    });
+  	
+  	
+
+  	});
+
+  
+	</script>
+</body>
+</html>

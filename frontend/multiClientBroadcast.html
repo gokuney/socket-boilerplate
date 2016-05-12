@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Client Broadcast</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+  <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+  
+</head>
+
+<body>
+
+<label for=""> Enter as whom you want to receive data as ?  </label>
+<input type="text" id="client_id" />
+<button>GO !</button>
+<p id="log">
+  
+</p>
+  <script>
+    $(function(){
+
+    $(document).on( 'click' , 'button' , function(e){
+      e.preventDefault();
+      var id = $('#client_id').val();
+      alert('Receiving as delivey_boy_' + id);
+
+      //define socket
+      window.socket = io.connect('http://192.168.0.6:3000');
+
+      //set the delivery boy with this ID 
+      socket.on('connect' , function(){
+        alert('Connected');
+        socket.emit('storeClientInfo', { customId : "delivey_boy_"+id });
+
+      });
+
+      socket.on('moving' , function(data){
+        $('#log').append('<p> Got data as'+JSON.stringify(data)+'  </p>');
+      });
+
+
+
+    });
+    
+    
+
+    });
+
+  
+  </script>
+</body>
+</html>

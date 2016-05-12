@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Map Implementation</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+	<!-- ADD MAP -->
+	<script src="mapbox.js"></script>
+	<link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet' />
+	
+	<style>
+	  #map { position:absolute; top:0; bottom:0; width:100%;z-index:1; }
+
+	</style>
+</head>
+<body>
+	
+	<div id="map"></div>
+	<div id="mapInfo">Map Info</div>
+
+	<script>
+		$(function(){
+
+  	//define socket
+  	window.socket = io.connect('http://192.168.0.7:3000');
+
+  	/*=====================================
+  	=            MAP FUNCTIONS            =
+  	=====================================*/
+  	
+  	//define token
+  	L.mapbox.accessToken = 'pk.eyJ1IjoiZ29rdW5leSIsImEiOiJiM2IwYzAxN2RlMTkzZTc1NTgwYzBhZGJlZTVkMWQ3OCJ9.evHnEjbWE_fI8lLrNzOv7w';
+
+  	//define map
+  	var map = L.mapbox.map('map', 'mapbox.streets')
+    .setView([37.9, -77],4);
+
+    //define marker
+    window.marker = L.marker(new L.LatLng(37.9, -77), {
+    icon: L.mapbox.marker.icon({
+        'marker-color': 'ff8888'
+    }),
+    draggable: true
+		});
+
+	//listen for drag event
+	socket.on('moving' , function(data){
+    	var newLatLng = new L.LatLng(data.lat, data.lng);
+    	marker.setLatLng(newLatLng); 
+    	$('#mapInfo').html('Lat : ' + data.lat + ' Lng : ' + data.lng);
+    });
+
+    //add little popup on marker
+    marker.bindPopup('This marker is draggable! Move it around.');
+	marker.addTo(map);
+  	
+  	/*=====  End of MAP FUNCTIONS  ======*/
+
+  	});
+
+  
+	</script>
+</body>
+</html>
